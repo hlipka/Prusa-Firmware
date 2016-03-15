@@ -1249,9 +1249,11 @@ void setup()
 	else { //printer version was changed so use default settings 
 		Config_ResetDefault();
 	}
+  SERIAL_ECHORPGM(_n("debug1"));
 	SdFatUtil::set_stack_guard(); //writes magic number at the end of static variables to protect against overwriting static memory by stack
-
+  SERIAL_ECHORPGM(_n("debug2"));
 	tp_init();    // Initialize temperature loop
+  SERIAL_ECHORPGM(_n("debug3 "));
 
 	if (w25x20cl_success) lcd_splash(); // we need to do this again, because tp_init() kills lcd
 	else

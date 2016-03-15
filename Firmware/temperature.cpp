@@ -1060,12 +1060,13 @@ static void updateTemperaturesFromRawValues()
 
 void tp_init()
 {
+  SERIAL_ECHOLN("in tp_init 1");
 #if MB(RUMBA) && ((TEMP_SENSOR_0==-1)||(TEMP_SENSOR_1==-1)||(TEMP_SENSOR_2==-1)||(TEMP_SENSOR_BED==-1))
   //disable RUMBA JTAG in case the thermocouple extension is plugged on top of JTAG connector
   MCUCR=(1<<JTD); 
   MCUCR=(1<<JTD);
 #endif
-  
+SERIAL_ECHOLN("in tp_init 2");  
   // Finish init of mult extruder arrays 
   for(int e = 0; e < EXTRUDERS; e++) {
     // populate with the first value 
@@ -1079,7 +1080,7 @@ void tp_init()
     temp_iState_max_bed = PID_INTEGRAL_DRIVE_MAX / cs.bedKi;
 #endif //PIDTEMPBED
   }
-
+SERIAL_ECHOLN("in tp_init 3");
   #if defined(HEATER_0_PIN) && (HEATER_0_PIN > -1) 
     SET_OUTPUT(HEATER_0_PIN);
   #endif  
@@ -1233,6 +1234,7 @@ void tp_init()
 #endif
   }
 #endif //AMBIENT_MAXTEMP
+SERIAL_ECHOLN("end tp_init");
 }
 
 #if (defined (TEMP_RUNAWAY_BED_HYSTERESIS) && TEMP_RUNAWAY_BED_TIMEOUT > 0) || (defined (TEMP_RUNAWAY_EXTRUDER_HYSTERESIS) && TEMP_RUNAWAY_EXTRUDER_TIMEOUT > 0)
