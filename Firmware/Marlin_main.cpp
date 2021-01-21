@@ -1012,12 +1012,26 @@ void setup()
 {
 	mmu_init();
 
-	ultralcd_init();
+  pinMode(73, OUTPUT); // PJ3 aka LA_channel3, signal start (pulse) and end (stay high)
+  pinMode(53, OUTPUT); // PROC_nCS aka LA channel 2 , signal tasks
+  digitalWrite(73,0);  
+  digitalWrite(53,0);  
+  digitalWrite(73,1);  
+  digitalWrite(53,1);
+  _delay_us(TASK_TOGGLE_TIME);  
+  digitalWrite(73,0);  
+  digitalWrite(53,0);  
 
+
+	ultralcd_init();
 	spi_init();
 
+TASK_TOGGLE
 	lcd_splash();
+  // when adding this one boot seems to be fine, when commenting it hangs most of the time
+TASK_TOGGLE
     Sound_Init();                                // also guarantee "SET_OUTPUT(BEEPER)"
+
 
 	selectedSerialPort = eeprom_read_byte((uint8_t *)EEPROM_SECOND_SERIAL_ACTIVE);
 	if (selectedSerialPort == 0xFF) selectedSerialPort = 0;
@@ -1025,6 +1039,7 @@ void setup()
 	MYSERIAL.begin(BAUDRATE);
 	fdev_setup_stream(uartout, uart_putchar, NULL, _FDEV_SETUP_WRITE); //setup uart out stream
 	stdout = uartout;
+
 
 #ifdef W25X20CL
     bool w25x20cl_success = w25x20cl_init();
@@ -1044,7 +1059,7 @@ void setup()
 	const bool w25x20cl_success = true;
 #endif //W25X20CL
 
-
+//TASK_TOGGLE
 	setup_killpin();
 	setup_powerhold();
 
@@ -1073,6 +1088,7 @@ void setup()
           if(!(eeprom_read_byte((uint8_t*)EEPROM_FAN_CHECK_ENABLED)))
                eeprom_update_byte((unsigned char *)EEPROM_FAN_CHECK_ENABLED,true);
 	}
+  TASK_TOGGLE
 #ifndef W25X20CL
 	SERIAL_PROTOCOLLNPGM("start");
 #else
@@ -1247,11 +1263,18 @@ void setup()
 	else { //printer version was changed so use default settings 
 		Config_ResetDefault();
 	}
+
 	SdFatUtil::set_stack_guard(); //writes magic number at the end of static variables to protect against overwriting static memory by stack
+  TASK_TOGGLE
 
 	tp_init();    // Initialize temperature loop
+  TASK_TOGGLE
 
-	if (w25x20cl_success) lcd_splash(); // we need to do this again, because tp_init() kills lcd
+	if (w25x20cl_success) 
+  {
+    lcd_splash(); // we need to do this again, because tp_init() kills lcd
+  TASK_TOGGLE
+  }
 	else
 	{
 	    w25x20cl_err_msg();
@@ -1264,6 +1287,9 @@ void setup()
 	else
 		SERIAL_ECHOLNRPGM(PSTR("NOCTUA"));
 #endif //EXTRUDER_ALTFAN_DETECT
+
+  // boot should be fine by now
+  digitalWrite(73,1);  
 
 	plan_init();  // Initialize planner;
 

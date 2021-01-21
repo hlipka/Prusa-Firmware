@@ -1066,6 +1066,7 @@ void tp_init()
   MCUCR=(1<<JTD);
 #endif
   
+  TASK_TOGGLE
   // Finish init of mult extruder arrays 
   for(int e = 0; e < EXTRUDERS; e++) {
     // populate with the first value 
@@ -1079,6 +1080,7 @@ void tp_init()
     temp_iState_max_bed = PID_INTEGRAL_DRIVE_MAX / cs.bedKi;
 #endif //PIDTEMPBED
   }
+  TASK_TOGGLE
 
   #if defined(HEATER_0_PIN) && (HEATER_0_PIN > -1) 
     SET_OUTPUT(HEATER_0_PIN);

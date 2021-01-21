@@ -23,6 +23,9 @@
 #include "Timer.h"
 extern uint8_t mbl_z_probe_nr;
 
+#define TASK_TOGGLE_TIME 10
+#define TASK_TOGGLE {digitalWrite(53,1); _delay_us(TASK_TOGGLE_TIME); digitalWrite(53,0); _delay_us(TASK_TOGGLE_TIME);}
+
 #ifndef AT90USB
 #define  HardwareSerial_h // trick to disable the standard HWserial
 #endif
